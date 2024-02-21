@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="util.js"></script>
+    <title>Document</title>
+    <style>
+        :root{
+            --colNr:4;
+            --cell:100px;
+        }
+        #game-board{
+            display: grid;
+            grid-template-columns: repeat(var(--colNr),var(--cell));
+            gap:10px;
+        }
+        .card{
+            width: var(--cell);
+            height: var(--cell);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: blanchedalmond;
+            font-size: 2rem;
+            border-radius: 10px;
+            border: solid darkblue 1px;
+        }
+        #radiosdiv{
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            margin: 20px;
+        }
+        .almadiv{
+            margin: 10px;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        #igen{
+            width: 100px;
+            height: 20px;
+        }
+        @media only screen and (max-width: 600px) {
+        .card{
+            font-size: 1rem;
+            border-radius: 4px;
+        }
+        }
+    </style>
+</head>
+<body>
+    <div id="radiosdiv">
+        <div class="almadiv">
+            <label for="4">4</label>
+            <input type="radio" value="4" name="igen" id="negy" checked>
+        </div>
+        <div class="almadiv">
+            <label for="">8</label>
+            <input type="radio" value="8" name="igen" id="nyolc">
+        </div>
+        <div class="almadiv">
+            <label for="">10</label>
+            <input type="radio" value="10" name="igen" id="tiz">
+        </div>
+        <div class="almadiv">
+            <button onclick="tablazat()"  id="igen">Go</button>
+            </div>
+    </div>
+
+
+    <div id="game-board" class="container"></div> 
+
+    <script>
+
+
+        console.log(emojiArr(10));
+
+        console.log(window.innerWidth,window.innerWidth);
+
+        const emojis = ['😀', '😎', '🌟', '🎉', '🚀', '🎈', '🍎', '🍕'];
+        const gameBoard=[...emojis,...emojis]
+       // console.log(gameBoard);//dupláztuk
+        console.log(gameBoard);
+        
+
+        let flipped=[]
+        let locked=false
+
+        function tablazat(){
+    
+            document.getElementById('game-board').innerHTML='';
+            
+            size = document.querySelector('input[type="radio"]:checked').value
+            console.log(size);
+            barack = emojiArr((document.querySelector('input[type="radio"]:checked').value*document.querySelector('input[type="radio"]:checked').value)/2)
+            alma = [...barack,...barack]
+            alma.sort(()=>Math.random()-0.5)
+            console.log(alma);
+            alma.forEach((item,index)=>{
+            document.getElementById('game-board').innerHTML+=`
+                <div class="card" id="e${index}" onclick="flipCard(this)">?</div>
+            `
+            })
+            asd = window.innerWidth
+            document.body.style.setProperty('--colNr',size)
+            if(asd>1000 && size == 4){
+                document.body.style.setProperty('--cell',(asd)/size/size+'px')
+   
+            }else{
+                document.body.style.setProperty('--cell',(asd/size/size)+asd/size/2 +'px')
+            }
+
+
+        }
+
+        function flipCard(domObj){
+            console.log(flipped);
+            console.log(domObj.id.slice(1));
+            let index=domObj.id.slice(1)          
+            if(flipped.length<2 && domObj.textContent=='?' ){
+                domObj.textContent=alma[index]
+                flipped.push(index)
+                if(flipped.length==2){
+                    //locked=true
+                    setTimeout(check,1000)
+                }
+            }
+        }
+        function check(){
+           // let i1=flipped[0]
+            //let i2=flipped[1]
+            let [i1,i2]=flipped
+            if(alma[i1]!=alma[i2]){
+                document.getElementById(`e${i1}`).textContent='?'
+                document.getElementById(`e${i2}`).textContent='?'
+            }
+      
+            flipped=[]
+            let count=0
+            document.querySelectorAll('.card').forEach(obj=>{
+                if(obj.textContent!='?') count++
+            })
+            if(count==alma.length) alert('Nyertél!')
+        }
+
+    </script>
+</body>
+</html>
